@@ -41,6 +41,9 @@
         "properties": {
           "event": {
             "$ref": "#/components/schemas/event"
+          },
+          "location":{
+            "$ref": "#/components/schemas/gps"
           }
         },
         "required": ["event"]
@@ -67,6 +70,19 @@
           "leave_base",
           "to_base"
         ]
+      },
+      "gps":{
+        "type": "object",
+        "description": "ข้อมูลเกี่ยวกับตำแหน่งพิกัด GPS",
+        "properties": {
+          "lat":{
+            "type": "number",
+            "description": "พิกัด"
+          },
+          "lng":{
+            "type": "number"
+          }
+        }
       }
     }
   },
@@ -77,7 +93,7 @@
           "เหตุการณ์"
         ],
         "summary": "เพิ่มเหตุการณ์",
-        "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ เช่น ออกจากฐาน, กลับถึงฐาน",
+        "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ เช่น ออกจากฐาน, กลับถึงฐาน โดยปกติข้อมูลส่วนนี้จะเป็นหน้าที่ของ พนักงานขับรถฉุกเฉิน แต่หากระบบสามารถตรวจได้โดยอัตโนมัติก็สามารถ ให้ระบบส่งให้ได้",
         "parameters": [
           {
             "name": "vehicleId",
