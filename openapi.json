@@ -1,0 +1,87 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Mi-DEMS openapi doc",
+    "version": "1_06-06-2024",
+    "description": "api สำหรับให้ภายนอกเชื่อมต่อกับระบบ Mi-DEMS"
+  },
+  "servers": [
+    {
+      "url": "{base_url}",
+      "description": "ปรับแต่ง url ได้เอง",
+      "variables": {
+        "base_url": {
+          "default": "http://localhost:8080/v1"
+        }
+      }
+    },
+    {
+      "url": "http://localhost:8080/v1",
+      "description": "สำหรับทดสอบ"
+    }
+  ],
+  "security": [
+    {
+      "Authorization":[]
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "Authorization":{
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "ปรับแต่งรูปแบบ Key ภายใต้ Authorization http header ใต้ตามต้องการ <br> Example Bearer xxxxx"
+      }
+    },
+    "schemas": {
+      "postEvent":{
+        "type": "object",
+        "description": "ข้อมูลสำหรับเพิ่มเหตุการณ์ใหม่ leave_base=ออกจากฐาน, to_base=กลับถึงฐาน",
+        "properties": {
+          "event":{
+            "type": "string",
+            "default":"to_base",
+            "enum": [
+              "leave_base",
+              "to_base"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/event-by-vehicle/{vehicleId}": {
+      "post": {
+        "tags": [
+          "เหตุการณ์"
+        ],
+        "summary": "เพิ่มเหตุการณ์",
+        "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ",
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema":{
+                "$ref": "#/components/schemas/postEvent"
+              }
+            }
+          },
+          "required": true,
+          "description": "ข้อมูลเหตุการณ์ที่ต้องการเพิ่ม"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404":{
+            "description": "ไม่พบรหัสพาหนะ"
+          },
+          "401":{
+            "description": "Authorization ผิด หรือ ไม่ได้ระบุ Authorization"
+          }
+        }
+      }
+    }
+  }
+}
