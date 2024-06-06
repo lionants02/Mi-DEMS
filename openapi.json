@@ -31,7 +31,7 @@
         "type": "apiKey",
         "name": "Authorization",
         "in": "header",
-        "description": "ปรับแต่งรูปแบบ Key ภายใต้ Authorization http header ใต้ตามต้องการ <br> Example Bearer xxxxx"
+        "description": "ปรับแต่งรูปแบบ Key ภายใต้ Authorization http header ใต้ตามต้องการ <br> Example Bearer xxxxx <br> Example api-key aabbcc"
       }
     },
     "schemas": {
