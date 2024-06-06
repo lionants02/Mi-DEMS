@@ -141,7 +141,7 @@
             "description": "Authorization ผิด หรือ ไม่ได้ระบุ Authorization"
           },
           "404": {
-            "description": "ไม่พบรหัสพาหนะ"
+            "description": "ไม่พบรหัสพาหนะ หรือ พาหนะไม่พร้อม"
           }
         }
       }
