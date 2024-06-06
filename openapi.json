@@ -54,6 +54,11 @@
         "type": "object",
         "description": "ข้อมูลเหตุการณ์ที่ส่งคืนจาก api",
         "properties": {
+          "id":{
+            "type": "string",
+            "description": "id จะไม่ซ้ำกันเลย ไว้ใช้อ้างอิง",
+            "example":"xxcdกดหฟ5221"
+          },
           "event": {
             "$ref": "#/components/schemas/event"
           },
