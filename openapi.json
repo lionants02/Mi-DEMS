@@ -42,7 +42,8 @@
           "event": {
             "$ref": "#/components/schemas/event"
           }
-        }
+        },
+        "required": ["event"]
       },
       "returnEvent": {
         "type": "object",
