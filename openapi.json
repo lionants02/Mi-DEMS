@@ -42,11 +42,13 @@
           "event": {
             "$ref": "#/components/schemas/event"
           },
-          "location":{
+          "location": {
             "$ref": "#/components/schemas/gps"
           }
         },
-        "required": ["event"]
+        "required": [
+          "event"
+        ]
       },
       "returnEvent": {
         "type": "object",
@@ -71,16 +73,24 @@
           "to_base"
         ]
       },
-      "gps":{
+      "gps": {
         "type": "object",
         "description": "ข้อมูลเกี่ยวกับตำแหน่งพิกัด GPS",
         "properties": {
-          "lat":{
+          "lat": {
             "type": "number",
-            "description": "พิกัด"
+            "description": "พิกัดละติจูด",
+            "example": 14.077885847295322
           },
-          "lng":{
-            "type": "number"
+          "lng": {
+            "type": "number",
+            "description": "พิกัดลองติจูด",
+            "example": 100.60228228571454
+          },
+          "accuracy": {
+            "type": "number",
+            "description": "ค่าความแม่นยำ +- หน่วยเป็น เมตร",
+            "example": 10
           }
         }
       }
