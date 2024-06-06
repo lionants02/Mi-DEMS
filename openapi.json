@@ -22,12 +22,12 @@
   ],
   "security": [
     {
-      "Authorization":[]
+      "Authorization": []
     }
   ],
   "components": {
     "securitySchemes": {
-      "Authorization":{
+      "Authorization": {
         "type": "apiKey",
         "name": "Authorization",
         "in": "header",
@@ -35,19 +35,37 @@
       }
     },
     "schemas": {
-      "postEvent":{
+      "postEvent": {
         "type": "object",
-        "description": "ข้อมูลสำหรับเพิ่มเหตุการณ์ใหม่ leave_base=ออกจากฐาน, to_base=กลับถึงฐาน",
+        "description": "ข้อมูลสำหรับเพิ่มเหตุการณ์ใหม่",
         "properties": {
-          "event":{
-            "type": "string",
-            "default":"to_base",
-            "enum": [
-              "leave_base",
-              "to_base"
-            ]
+          "event": {
+            "$ref": "#/components/schemas/event"
           }
         }
+      },
+      "returnEvent": {
+        "type": "object",
+        "description": "ข้อมูลเหตุการณ์ที่ส่งคืนจาก api",
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/event"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "ข้อมูลเวลา",
+            "default": "2023-03-10T22:08:51.718584300"
+          }
+        }
+      },
+      "event": {
+        "type": "string",
+        "default": "to_base",
+        "description": "leave_base=ออกจากฐาน, to_base=กลับถึงฐาน",
+        "enum": [
+          "leave_base",
+          "to_base"
+        ]
       }
     }
   },
@@ -58,27 +76,34 @@
           "เหตุการณ์"
         ],
         "summary": "เพิ่มเหตุการณ์",
-        "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ",
-        "requestBody":{
+        "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ เช่น ออกจากฐาน, กลับถึงฐาน",
+        "requestBody": {
           "content": {
-            "application/json":{
-              "schema":{
+            "application/json": {
+              "schema": {
                 "$ref": "#/components/schemas/postEvent"
               }
             }
           },
           "required": true,
-          "description": "ข้อมูลเหตุการณ์ที่ต้องการเพิ่ม"
+          "description": "ข้อมูลเหตุการณ์ที่ต้องการเพิ่มจำเป็นต้องใส่"
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "ไม่พบปัญหา ระบบจะส่งค่าเดิมกลับมา",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/returnEvent"
+                }
+              }
+            }
           },
-          "404":{
-            "description": "ไม่พบรหัสพาหนะ"
-          },
-          "401":{
+          "401": {
             "description": "Authorization ผิด หรือ ไม่ได้ระบุ Authorization"
+          },
+          "404": {
+            "description": "ไม่พบรหัสพาหนะ"
           }
         }
       }
