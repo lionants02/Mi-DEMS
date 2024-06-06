@@ -77,6 +77,17 @@
         ],
         "summary": "เพิ่มเหตุการณ์",
         "description": "เพิ่มเหตุการณ์ด้วยรหัสพาหนะ เช่น ออกจากฐาน, กลับถึงฐาน",
+        "parameters": [
+          {
+            "name": "vehicleId",
+            "description": "รหัสเลขทะเบียนพาหนะ",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
