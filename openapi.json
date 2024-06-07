@@ -141,15 +141,9 @@
             "description": "สร้างข้อมูลเมื่อ ไม่ต้องส่งค่านี้เข้ามา จะถูกสร้างโดยระบบ",
             "example": "2023-03-10T22:08:51.718584300"
           },
-          "detail": {
-            "type": "object",
-            "description": "ข้อมูลรายละเอียดอื่นๆ",
-            "properties": {
-              "case": {
-                "description": "ข้อมูลเกี่ยวกับเคส",
-                "$ref": "#/components/schemas/configRoom"
-              }
-            }
+          "configRoom": {
+            "description": "ข้อมูลการตั้งค่าห้องประชุม",
+            "$ref": "#/components/schemas/configRoom"
           }
         }
       },
