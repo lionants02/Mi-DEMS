@@ -23,7 +23,8 @@ erDiagram
     }
 
     Patient["ผู้ป่วยฉุกเฉิน"]{
-        string caseId PK
+        string patientId PK "รหัสผู้ป่วย"
+        string caseId "รหัสรับแจ้ง"
     }
 
     Team["ทีมปฏิบัติงาน"]{
@@ -38,7 +39,7 @@ erDiagram
     }
     IPCam["ชุดกล้องในพาหนะ"]
     Report["รายงานเบิกจ่าย"]{
-        string caseId PK,FK
+        string patientId PK,FK
         string operation_set_id PK,FK
         string reportId "autogen"
     }
@@ -63,12 +64,12 @@ erDiagram
 ```mermaid
 mindmap
   root((ห้องประชุมฉุกเฉิน))
-    รายการผู้ประสบเหตุ
-        ใครบ้าง
+    ผู้ประสบเหตุ
         ตำแหน่งที่เกิดเหตุ
         ชื่อ เพศ อายุ
         ระดับความรุ่นแรง
         วันเวลารับแจ้ง
+        รหัสรับแจ้ง
     ข้อมูลพาหนะ
         ทีมที่ขึ้นพาหนะ
         ระดับทีม

@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Mi-DEMS openapi doc",
-    "version": "1_07-06-2024",
+    "version": "DRAF_V1_07-06-2024",
     "description": "api สำหรับให้ภายนอกเชื่อมต่อกับระบบ Mi-DEMS"
   },
   "servers": [
@@ -70,6 +70,11 @@
                   "type": "string",
                   "description": "รหัสผู้ป่วย",
                   "example": "p12235"
+                },
+                "caseId": {
+                  "type": "string",
+                  "description": "รหัสรับแจ้ง",
+                  "example": "cse-5651"
                 },
                 "idc_level": {
                   "type": "string",
@@ -146,7 +151,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "default":"txx1123"
+              "default": "txx1123"
             }
           }
         ],
