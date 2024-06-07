@@ -18,6 +18,10 @@
     {
       "url": "http://localhost:8080/v1",
       "description": "สำหรับทดสอบ"
+    },
+    {
+      "url": "/",
+      "description": "ใช้ root url จากลิงก์ปัจจุบันที่เปิดเอกสาร"
     }
   ],
   "security": [
