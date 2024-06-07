@@ -13,7 +13,7 @@
 ## สถานะสำคัญในระบบ Mi-DEMS
 ```mermaid
  flowchart LR
-    p8["กลับถึงฐาน/พร้อมรับงานต่อ\nstampCode:7"]
+    p8["กลับถึงฐาน/พร้อมรับงานต่อ\nstampCode:7\nหากพร้อมรรับงานต่อจำเป็นต้องสแตมป์สถานะนี้"]:::red
     s("รับงาน\nstampCode:1")
     p1["ออกจากฐาน\nstampCode:2"]
     p2["ถึงจุดเกิดเหตุ/จุดรับผู้ป่วย\nstampCode:3"]
@@ -50,6 +50,10 @@
     p7-->p72
     p7-->p73
     p7-->p74
+
+    classDef red stroke:#f00
+    classDef red stroke-width:4px
+    classDef red fill:green
 ```
 
 ## วิเคราะห์ข้อมูล
