@@ -81,7 +81,8 @@ erDiagram
         number id PK
         string patientId FK "รหัสผู้ป่วย"
         string operation_set_id FK "รหัสชุดปฏิบัติการ"
-        string code
+        string stampCode
+        string closingReasonCode
         string message
         timestamp create_at
     }
