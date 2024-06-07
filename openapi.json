@@ -3,7 +3,7 @@
   "info": {
     "title": "Mi-DEMS openapi doc",
     "version": "DRAF_V1_07-06-2024",
-    "description": "api สำหรับให้ภายนอกเชื่อมต่อกับระบบ Mi-DEMS"
+    "description": "api สำหรับให้ภายนอกเชื่อมต่อกับระบบ Mi-DEMS โดยการออกแบบปัจจุบัน จะอ้างอิงพาหนะผูกกับห้องประชุมแบบ หนึ่ง ต่อ หนึ่ง <br> [เอกสารอ้างอิง](https://github.com/lionants02/Mi-DEMS/blob/page/README.md)"
   },
   "servers": [
     {
@@ -152,6 +152,11 @@
         "description": "รหัสเหตุผลปิดงาน 1=ส่งต่อชุดระดับสูงกว่า, 2=ไม่นำส่งอาจจะขอลงระหว่างทาง, 3=เสียชีวิตระหว่างนำส่ง, 4=เสียชีวิต ณ จุดเกิดเหตุ, 5=ผู้ป่วยปฏิเสทการรักษาไม่ไป รพ., 6=ยกเลิกโดยศูนย์หรือบังคับยกเลิก, 7=ไม่พบเหตุ, 8=เสียชีวิตก่อนชุดไปถึง",
         "default": "2",
         "enum": ["1", "2", "3", "4", "5", "6", "7", "8"]
+      },
+      "stampCode": {
+        "type": "string",
+        "example": "3",
+        "description": "1=รับงาน, 2=ออกจากฐาน, 3=ถึงจุดเกิดเหตุ/จุดรับผู้ป่วย, 4=มีการรักษา, 5=ออกจากจุดเกิดเหตุ, 6=ถึงโรงพยาบาล, 7=กลับถึงฐาน/พร้อมรับงานต่อ"
       }
     },
     "responses": {
@@ -320,6 +325,88 @@
           },
           "400": {
             "description": "ไม่พบรหัส ClosingReasonCode ที่ระบุ",
+            "$ref": "#/components/responses/bad400"
+          }
+        }
+      }
+    },
+    "/room/{operation_set_id}/stamp": {
+      "post": {
+        "tags": ["ห้องประชุม", "ผู้ป่วย"],
+        "summary": "สแตมป์สถานะผู้ป่วย",
+        "description": "จะสแตป์มสถานะของผู้ป่วยฉุกเฉิน ในห้องของชุดทีมปฏิบัติการที่กำลังปฏิบัติงาน",
+        "parameters": [
+          {
+            "name": "operation_set_id",
+            "description": "รหัสชุดที่ออกปฏิบัติการ",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "50-1-VZZ-107"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "ข้อมูลสแตมป์สถานะผู้ป่วยที่ชุดปฏิบัติการดูแลอยู่",
+                "required": ["stampCode"],
+                "properties": {
+                  "stampCode": {
+                    "$ref": "#/components/schemas/stampCode"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "สแตมป์สถานะสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "รายการสแสมป์",
+                  "items": {
+                    "properties": {
+                      "stampCode": {
+                        "$ref": "#/components/schemas/stampCode"
+                      },
+                      "createAt": {
+                        "type": "string",
+                        "description": "วันเวลาที่ สแตมป์สถานะ",
+                        "example": "2023-03-10T22:08:51.718584300"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "stampCode": "2",
+                    "createAt": "2023-03-10T22:01:10.718584300"
+                  },
+                  {
+                    "stampCode": "3",
+                    "createAt": "2023-03-10T22:08:51.718584300"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "ไม่มีสิทธิ์ใช้งานระบบ",
+            "$ref": "#/components/responses/noAuth401"
+          },
+          "404": {
+            "description": "ไม่พบรหัส operation_set_id",
+            "$ref": "#/components/responses/notFound404"
+          },
+          "400": {
+            "description": "ไม่พบรหัส stampCode หรือ อื่นๆ ดู message",
             "$ref": "#/components/responses/bad400"
           }
         }

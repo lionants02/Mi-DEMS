@@ -1,5 +1,6 @@
 - [Api Doc](#api-doc)
 - [Note เอกสารเปิดสำหรับการเชื่อมต่อระบบ](#note-เอกสารเปิดสำหรับการเชื่อมต่อระบบ)
+  - [สถานะสำคัญในระบบ Mi-DEMS](#สถานะสำคัญในระบบ-mi-dems)
   - [วิเคราะห์ข้อมูล](#วิเคราะห์ข้อมูล)
   - [ข้อมูลสำหรับใช้เปิดห้อง Mi-DEMS](#ข้อมูลสำหรับใช้เปิดห้อง-mi-dems)
     - [ช่วงการเกิดห้องประชุม](#ช่วงการเกิดห้องประชุม)
@@ -9,8 +10,50 @@
 
 # Note เอกสารเปิดสำหรับการเชื่อมต่อระบบ
 
+## สถานะสำคัญในระบบ Mi-DEMS
+```mermaid
+ flowchart LR
+    p8["กลับถึงฐาน/พร้อมรับงานต่อ\nstampCode:7"]
+    s("รับงาน\nstampCode:1")
+    p1["ออกจากฐาน\nstampCode:2"]
+    p2["ถึงจุดเกิดเหตุ/จุดรับผู้ป่วย\nstampCode:3"]
+    p3["มีการรักษา\nstampCode:4"]
+    p4["ไม่มีการรักษา"]
+    p5["ออกจากจุดเกิดเหตุ/จุดรับ\nstampCode:5"]
+    p6["ถึงโรงพยาบาล\nstampCode:6"]
+    p7["ปิดงานก่อนถึง รพ."]
+
+    p41["ผู้ป่วยปฏิเสท\nclosingReasonCode:5"]
+    p42["ยกเลิก\nclosingReasonCode:6"]
+    p43["ไม่พบเหตุ\nclosingReasonCode:7"]
+    p44["เสียชีวิตก่อนชุดปฏิบัติการไปถึง\nclosingReasonCode:8"]
+
+    s-->p1-->p2-->p3-->p5-->p6
+    p2-->p4
+    p4-->p41
+    p4-->p42
+    p4-->p43
+    p4-->p44
+
+    s-.->p7
+    p1-.->p7
+    p2-.->p7
+    p3-.->p7
+    p5-.->p7
+
+    p71["ส่งต่อชุดระดับสูงกว่า\nclosingReasonCode:1"]
+    p72["ไม่นำส่ง/ขอลง\nclosingReasonCode:2"]
+    p73["เสียชีวิตระหว่างนำส่ง\nclosingReasonCode:3"]
+    p74["เสียชีวิต ณ จุดเกิดเหตุ\nclosingReasonCode:4"]
+    
+    p7-->p71
+    p7-->p72
+    p7-->p73
+    p7-->p74
+```
+
 ## วิเคราะห์ข้อมูล
-ความสัมพันธ์ (Relationships) ของข้อมูล
+ความสัมพันธ์ (Relationships) ของข้อมูลตารางหลักๆ
 ```mermaid
 erDiagram
     ConferenceRoom["ห้องประชุม Mi-DEMS"]{
@@ -27,6 +70,15 @@ erDiagram
         string patientId PK "รหัสผู้ป่วย"
         string hospitalId FK
         string caseId "รหัสรับแจ้ง"
+    }
+    
+    PatientTimeline["ไทม์ไลน์ผู้ป่วย"]{
+        number id PK
+        string patientId FK "รหัสผู้ป่วย"
+        string operation_set_id FK "รหัสชุดปฏิบัติการ"
+        string code
+        string message
+        timestamp create_at
     }
 
     Team["ทีมปฏิบัติงาน"]{
