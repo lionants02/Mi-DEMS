@@ -60,36 +60,32 @@
         "type": "object",
         "description": "ชุดข้อมูลสั่งเปิดเคส ไปยังชุดรถที่ต้องการ",
         "properties": {
-          "patient": {
+          "patients": {
             "type": "array",
             "description": "รายการผู้ป่วย",
             "items": {
-              "type": "object",
-              "properties": {
-                "patientId": {
-                  "type": "string",
-                  "description": "รหัสผู้ป่วย",
-                  "example": "p12235"
-                },
-                "caseId": {
-                  "type": "string",
-                  "description": "รหัสรับแจ้ง",
-                  "example": "cse-5651"
-                },
-                "idc_level": {
-                  "type": "string",
-                  "description": "รหัสความรุ่นแรง ตามตาราง icd_level Master",
-                  "example": "2"
-                }
-              }
+              "$ref": "#/components/schemas/patients"
             }
           },
-          "operation_set_level": {
+          "operation_set": {
+            "$ref": "#/components/schemas/operation_set"
+          }
+        }
+      },
+      "operation_set": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "รหัสชุด",
+            "example": "50-1-VZZ-107"
+          },
+          "level": {
             "type": "string",
             "description": "ระดับของชุด",
             "example": "ALS"
           },
-          "gpsWebView": {
+          "mapWebView": {
             "type": "string",
             "description": "ดูพิกัด GPS แบบ webView"
           },
@@ -101,6 +97,27 @@
             "type": "string",
             "description": "สร้างข้อมูลเมื่อ ไม่ต้องส่งค่านี้เข้ามา จะถูกสร้างโดยระบบ",
             "example": "2023-03-10T22:08:51.718584300"
+          }
+        }
+      },
+      "patients": {
+        "type": "object",
+        "required": ["patientId", "caseId", "idc_level"],
+        "properties": {
+          "patientId": {
+            "type": "string",
+            "description": "รหัสผู้ป่วย",
+            "example": "P6601-1001-0011"
+          },
+          "caseId": {
+            "type": "string",
+            "description": "รหัสรับแจ้ง",
+            "example": "cse-5651"
+          },
+          "idc_level": {
+            "type": "string",
+            "description": "รหัสความรุ่นแรง ตามตาราง icd_level Master",
+            "example": "2"
           }
         }
       },
@@ -135,11 +152,11 @@
           }
         }
       },
-      "reasonCode": {
+      "ClosingReasonCode": {
         "type": "string",
-        "description": "รหัสเหตุผล 1=ส่งต่อชุดระดับสูงกว่า, 2=ไม่นำส่ง, 3=เสียชีวิตระหว่างนำส่ง, 4=เสียชีวิต ณ จุดเกิดเหตุ",
+        "description": "รหัสเหตุผลปิดงาน 1=ส่งต่อชุดระดับสูงกว่า, 2=ไม่นำส่งอาจจะขอลงระหว่างทาง, 3=เสียชีวิตระหว่างนำส่ง, 4=เสียชีวิต ณ จุดเกิดเหตุ, 5=ผู้ป่วยปฏิเสทการรักษาไม่ไป รพ., 6=ยกเลิกโดยศูนย์หรือบังคับยกเลิก, 7=ไม่พบเหตุ, 8=เสียชีวิตก่อนชุดไปถึง",
         "default": "2",
-        "enum": ["1", "2", "3", "4"]
+        "enum": ["1", "2", "3", "4", "5", "6", "7", "8"]
       }
     },
     "responses": {
@@ -225,7 +242,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "default": "txx1123"
+              "default": "50-1-VZZ-107"
             }
           }
         ],
@@ -275,7 +292,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "default": "txx1123"
+              "default": "50-1-VZZ-107"
             }
           }
         ],
@@ -285,8 +302,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "reasonCode": {
-                    "$ref": "#/components/schemas/reasonCode"
+                  "ClosingReasonCode": {
+                    "$ref": "#/components/schemas/ClosingReasonCode"
                   }
                 }
               }
@@ -306,7 +323,7 @@
             "$ref": "#/components/responses/notFound404"
           },
           "400": {
-            "description": "ไม่พบรหัส reasonCode ที่ระบุ",
+            "description": "ไม่พบรหัส ClosingReasonCode ที่ระบุ",
             "$ref": "#/components/responses/bad400"
           }
         }
@@ -314,14 +331,107 @@
     },
     "/room/{operation_set_id}/patient": {
       "post": {
-        "tags": ["ห้องประชุม", "ผู้ป่วย", "TODO รอออกแบบ"],
+        "tags": ["ห้องประชุม", "ผู้ป่วย"],
         "summary": "เพิ่มผู้ป่วยในห้อง",
-        "description": "ใช้ในกรณี มีผู้ป่วยเพิ่มหลังจากสร้างห้องไปแล้ว"
+        "description": "ใช้ในกรณี มีผู้ป่วยเพิ่มหลังจากสร้างห้องไปแล้ว",
+        "parameters": [
+          {
+            "name": "operation_set_id",
+            "description": "รหัสชุดที่ออกปฏิบัติการ",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "50-1-VZZ-107"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/patients"
+                }
+              },
+              "example": [
+                {
+                  "patientId": "P6601-1001-0016",
+                  "caseId": "cse-5655",
+                  "idc_level": "1"
+                },
+                {
+                  "patientId": "P6601-1001-0099",
+                  "caseId": "cse-5699",
+                  "idc_level": "3"
+                }
+              ]
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "เพิ่มผู้ป่วยสำเร็จ ส่งคืนข้อมูลห้องประชุม",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/conferenceRoom"
+                },
+                "example": {
+                  "roomId": "c11235",
+                  "link": "https://mi-dems-con/c11235",
+                  "createAt": "2023-03-10T22:08:51.718584300",
+                  "detail": {
+                    "case": {
+                      "patients": [
+                        {
+                          "patientId": "P6601-1001-0011",
+                          "caseId": "cse-5651",
+                          "idc_level": "2"
+                        },
+                        {
+                          "patientId": "P6601-1001-0016",
+                          "caseId": "cse-5655",
+                          "idc_level": "1"
+                        },
+                        {
+                          "patientId": "P6601-1001-0099",
+                          "caseId": "cse-5699",
+                          "idc_level": "3"
+                        }
+                      ],
+                      "operation_set": {
+                        "id": "50-1-VZZ-107",
+                        "level": "ALS",
+                        "mapWebView": "string",
+                        "GeoJSONApi": "string",
+                        "createAt": "2023-03-10T22:08:51.718584300"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "ไม่มีสิทธิ์ใช้งานระบบ",
+            "$ref": "#/components/responses/noAuth401"
+          },
+          "404": {
+            "description": "ไม่พบรหัส operation_set_id",
+            "$ref": "#/components/responses/notFound404"
+          },
+          "400": {
+            "description": "ไม่พบรหัส ClosingReasonCode ที่ระบุ",
+            "$ref": "#/components/responses/bad400"
+          }
+        }
       }
     },
     "/patient/{patientId}": {
       "get": {
-        "tags": ["ผู้ป่วย", "TODO รอออกแบบ"],
+        "tags": ["ผู้ป่วย"],
         "summary": "ข้อมูลผู้ป่วย",
         "description": "ดูข้อมูลที่มีการเชื่อมโยงกับเคส เช่น ข้อมูลชุดที่รับพวกลิงก์ข้อมูลต่างๆ",
         "parameters": [
@@ -332,10 +442,101 @@
             "required": true,
             "schema": {
               "type": "string",
-              "default": "p1123"
+              "default": "P6601-1001-0011"
             }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "ข้อมูลของผู้ป่วย",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "operation": {
+                      "type": "array",
+                      "description": "ข้อมูลเกี่ยวกับชุดปฏิบัติการ",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "roomId": {
+                            "type": "string",
+                            "description": "เลขห้อง Mi-DEMS",
+                            "example": "c11235"
+                          },
+                          "operation_set": {
+                            "$ref": "#/components/schemas/operation_set"
+                          }
+                        }
+                      }
+                    },
+                    "report": {
+                      "type": "array",
+                      "description": "ข้อมูล meta ของตัวรายงาน",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reportId": {
+                            "type": "string",
+                            "description": "รหัสอ้างอิงจากตารางรายงาน",
+                            "example": "r001"
+                          },
+                          "hospitalId": {
+                            "type": "string",
+                            "description": "รหัสสถานพยาบาลปลายทาง",
+                            "example": "12345"
+                          },
+                          "operation_set_id": {
+                            "type": "string",
+                            "description": "รหัสชุด",
+                            "example": "50-1-VZZ-107"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "operation": [
+                    {
+                      "roomId": "c11235",
+                      "operation_set": {
+                        "id": "50-1-VZZ-107",
+                        "level": "ALS",
+                        "mapWebView": "string",
+                        "GeoJSONApi": "string",
+                        "createAt": "2023-03-10T22:08:51.718584300"
+                      }
+                    },
+                    {
+                      "roomId": "c11238",
+                      "operation_set": {
+                        "id": "50-1-VZZ-999",
+                        "level": "ALS",
+                        "mapWebView": "string",
+                        "GeoJSONApi": "string",
+                        "createAt": "2023-03-10T22:30:55.123584300"
+                      }
+                    }
+                  ],
+                  "report": [
+                    {
+                      "reportId": "r001",
+                      "hospitalId": "12345",
+                      "operation_set_id": "50-1-VZZ-107"
+                    },
+                    {
+                      "reportId": "r005",
+                      "hospitalId": "12345",
+                      "operation_set_id": "50-1-VZZ-999"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
