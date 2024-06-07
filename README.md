@@ -27,7 +27,7 @@ erDiagram
     }
 
     Team["ทีมปฏิบัติงาน"]{
-        string teamId PK
+        string operation_set_id PK "รหัสชุดปฏิบัติการ"
         string roomId FK
         string vehicleId FK
     }
@@ -39,7 +39,7 @@ erDiagram
     IPCam["ชุดกล้องในพาหนะ"]
     Report["รายงานเบิกจ่าย"]{
         string caseId PK,FK
-        string teamId PK,FK
+        string operation_set_id PK,FK
         string reportId "autogen"
     }
     ER

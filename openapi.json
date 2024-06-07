@@ -58,7 +58,7 @@
       },
       "configRoom": {
         "type": "object",
-        "description": "ชุดข้อมูลสั่งเปิดเคส ไปยังทีมรถที่ต้องการ",
+        "description": "ชุดข้อมูลสั่งเปิดเคส ไปยังชุดรถที่ต้องการ",
         "properties": {
           "patient": {
             "type": "array",
@@ -79,9 +79,9 @@
               }
             }
           },
-          "teamLevel": {
+          "operation_set_level": {
             "type": "string",
-            "description": "ระดับของทีม",
+            "description": "ระดับของชุด",
             "example": "ALS"
           },
           "gpsWebView": {
@@ -133,15 +133,15 @@
     }
   },
   "paths": {
-    "/room/{teamId}": {
+    "/room/{operation_set_id}": {
       "post": {
         "tags": ["ห้องประชุม"],
         "summary": "สร้างห้องประชุม Mi-DEMS",
-        "description": "สร้างห้องประชุมในระบบ Mi-DEMS โดยระบบจะส่งการแจ้งเตือนรับงานฉุกเฉินไปยังทุกคนในทีมที่ระบุ",
+        "description": "สร้างห้องประชุมในระบบ Mi-DEMS โดยระบบจะส่งการแจ้งเตือนรับงานฉุกเฉินไปยังทุกคนในชุดที่ระบุ",
         "parameters": [
           {
-            "name": "teamId",
-            "description": "รหัสทีมที่ออกปฏิบัติการ",
+            "name": "operation_set_id",
+            "description": "รหัสชุดที่ออกปฏิบัติการ",
             "in": "path",
             "required": true,
             "schema": {
