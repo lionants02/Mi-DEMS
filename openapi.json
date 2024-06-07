@@ -103,7 +103,7 @@
         "type": "object",
         "description": "ข้อมูลห้องประชุมฉุกเฉิน",
         "properties": {
-          "conferenceId": {
+          "roomId": {
             "type": "string",
             "description": "รหัส id ของห้องประชุมในการสร้งแต่ละครั้ง รหัสนี้จะไม่ซ้ำกัน",
             "example": "c11235"
