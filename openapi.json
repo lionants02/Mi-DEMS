@@ -134,6 +134,80 @@
             }
           }
         }
+      },
+      "reasonCode": {
+        "type": "string",
+        "description": "รหัสเหตุผล 1=ส่งต่อชุดระดับสูงกว่า, 2=ไม่นำส่ง, 3=เสียชีวิตระหว่างนำส่ง, 4=เสียชีวิต ณ จุดเกิดเหตุ",
+        "default": "2",
+        "enum": ["1", "2", "3", "4"]
+      }
+    },
+    "responses": {
+      "notFound404": {
+        "description": "ไม่พบข้อมูล",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "MessageCode": {
+                  "description": "สถานะ http 404 code",
+                  "type": "string",
+                  "example": "404"
+                },
+                "Message": {
+                  "description": "ข้อความสถานะ Not Found",
+                  "type": "string",
+                  "example": "ไม่พบข้อมูล......"
+                }
+              }
+            }
+          }
+        }
+      },
+      "noAuth401": {
+        "description": "token ไม่มีสิทธิ์ใช้งานระบบ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "MessageCode": {
+                  "description": "สถานะ http 401 code",
+                  "type": "string",
+                  "example": "401"
+                },
+                "Message": {
+                  "description": "ข้อความสถานะ Unauthorized",
+                  "type": "string",
+                  "example": "Unauthorized ......"
+                }
+              }
+            }
+          }
+        }
+      },
+      "bad400": {
+        "description": "Bad Request เกิดจากพารามิเตอร์บางตัวมีปัญหา",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "MessageCode": {
+                  "description": "สถานะ http 400 code",
+                  "type": "string",
+                  "example": "400"
+                },
+                "Message": {
+                  "description": "ข้อความสถานะ Bad Request",
+                  "type": "string",
+                  "example": "Bad Request .....ไม่พบ...ค่าเกิน...."
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -176,14 +250,78 @@
             }
           },
           "401": {
-            "description": "Authorization ผิด หรือ ไม่ได้ระบุ Authorization"
+            "description": "ไม่มีสิทธิ์ใช้งานระบบ",
+            "$ref": "#/components/responses/noAuth401"
+          },
+          "404": {
+            "description": "ไม่พบรหัส operation_set_id",
+            "$ref": "#/components/responses/notFound404"
+          },
+          "400": {
+            "description": "Bad request ดู message",
+            "$ref": "#/components/responses/bad400"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["ห้องประชุม"],
+        "summary": "ปิดห้องประชุม Mi-DEMS",
+        "description": "ปิดห้องประชุมในระบบ Mi-DEMS โดยระบบจะปิดห้องของชุด และ นำผู้ป่วยที่อยู่ในการดูแลของชุดนี้ออก และพร้อมสำหรับสร้างห้องใหม่ต่อไป",
+        "parameters": [
+          {
+            "name": "operation_set_id",
+            "description": "รหัสชุดที่ออกปฏิบัติการ",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "txx1123"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reasonCode": {
+                    "$ref": "#/components/schemas/reasonCode"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ปิดห้องสมบูรณ์"
+          },
+          "401": {
+            "description": "ไม่มีสิทธิ์ใช้งานระบบ",
+            "$ref": "#/components/responses/noAuth401"
+          },
+          "404": {
+            "description": "ไม่พบรหัส operation_set_id",
+            "$ref": "#/components/responses/notFound404"
+          },
+          "400": {
+            "description": "ไม่พบรหัส reasonCode ที่ระบุ",
+            "$ref": "#/components/responses/bad400"
           }
         }
       }
     },
+    "/room/{operation_set_id}/patient": {
+      "post": {
+        "tags": ["ห้องประชุม", "ผู้ป่วย", "TODO รอออกแบบ"],
+        "summary": "เพิ่มผู้ป่วยในห้อง",
+        "description": "ใช้ในกรณี มีผู้ป่วยเพิ่มหลังจากสร้างห้องไปแล้ว"
+      }
+    },
     "/patient/{patientId}": {
       "get": {
-        "tags": ["ผู้ป่วย","TODO รอออกแบบ"],
+        "tags": ["ผู้ป่วย", "TODO รอออกแบบ"],
         "summary": "ข้อมูลผู้ป่วย",
         "description": "ดูข้อมูลที่มีการเชื่อมโยงกับเคส เช่น ข้อมูลชุดที่รับพวกลิงก์ข้อมูลต่างๆ",
         "parameters": [
