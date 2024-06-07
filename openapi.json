@@ -59,6 +59,7 @@
       "configRoom": {
         "type": "object",
         "description": "ชุดข้อมูลสั่งเปิดเคส ไปยังชุดรถที่ต้องการ",
+        "required": ["patients", "operation_set"],
         "properties": {
           "patients": {
             "type": "array",
@@ -282,8 +283,8 @@
       },
       "delete": {
         "tags": ["ห้องประชุม"],
-        "summary": "ปิดห้องประชุม Mi-DEMS",
-        "description": "ปิดห้องประชุมในระบบ Mi-DEMS โดยระบบจะปิดห้องของชุด และ นำผู้ป่วยที่อยู่ในการดูแลของชุดนี้ออก และพร้อมสำหรับสร้างห้องใหม่ต่อไป",
+        "summary": "ปิดห้องประชุม Mi-DEMS ก่อนถึง รพ.",
+        "description": "ปิดห้องประชุมในระบบ Mi-DEMS ก่อนถึงโรงพยาบาล โดยระบบจะปิดห้องของชุดปฏิบัติการ และ นำผู้ป่วยที่อยู่ในการดูแลของชุดนี้ออก และพร้อมสำหรับสร้างห้องใหม่ต่อไป",
         "parameters": [
           {
             "name": "operation_set_id",
@@ -301,8 +302,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["closingReasonCode"],
                 "properties": {
-                  "ClosingReasonCode": {
+                  "closingReasonCode": {
                     "$ref": "#/components/schemas/ClosingReasonCode"
                   }
                 }
@@ -535,6 +537,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "ไม่มีสิทธิ์ใช้งานระบบ",
+            "$ref": "#/components/responses/noAuth401"
+          },
+          "404": {
+            "description": "ไม่พบรหัส patientId",
+            "$ref": "#/components/responses/notFound404"
+          },
+          "400": {
+            "description": "ดู error message",
+            "$ref": "#/components/responses/bad400"
           }
         }
       }
