@@ -51,9 +51,10 @@
     p7-->p73
     p7-->p74
 
-    classDef red stroke:#f00
+    classDef red stroke:green
     classDef red stroke-width:4px
-    classDef red fill:green
+    classDef red fill:#39FF00
+    classDef red color:black
 ```
 
 ## วิเคราะห์ข้อมูล
