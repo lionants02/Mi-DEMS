@@ -79,6 +79,7 @@
       },
       "operation_set": {
         "type": "object",
+        "required": ["id", "level"],
         "properties": {
           "id": {
             "type": "string",
