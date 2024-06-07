@@ -180,6 +180,25 @@
           }
         }
       }
+    },
+    "/patient/{patientId}": {
+      "get": {
+        "tags": ["ผู้ป่วย","TODO รอออกแบบ"],
+        "summary": "ข้อมูลผู้ป่วย",
+        "description": "ดูข้อมูลที่มีการเชื่อมโยงกับเคส เช่น ข้อมูลชุดที่รับพวกลิงก์ข้อมูลต่างๆ",
+        "parameters": [
+          {
+            "name": "patientId",
+            "description": "รหัสชุดที่ออกปฏิบัติการ",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "p1123"
+            }
+          }
+        ]
+      }
     }
   }
 }
