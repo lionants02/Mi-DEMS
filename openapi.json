@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Mi-DEMS openapi doc",
-    "version": "1_06-06-2024",
+    "version": "1_07-06-2024",
     "description": "api สำหรับให้ภายนอกเชื่อมต่อกับระบบ Mi-DEMS"
   },
   "servers": [
@@ -35,49 +35,6 @@
       }
     },
     "schemas": {
-      "postEvent": {
-        "type": "object",
-        "description": "ข้อมูลสำหรับเพิ่มเหตุการณ์ของพาหนะใหม่",
-        "properties": {
-          "event": {
-            "$ref": "#/components/schemas/event"
-          },
-          "location": {
-            "$ref": "#/components/schemas/gps"
-          }
-        },
-        "required": [
-          "event"
-        ]
-      },
-      "returnEvent": {
-        "type": "object",
-        "description": "ข้อมูลเหตุการณ์ของพาหนะที่ส่งคืนจาก api",
-        "properties": {
-          "id":{
-            "type": "string",
-            "description": "id จะไม่ซ้ำกันเลย ไว้ใช้อ้างอิง",
-            "example":"xxcdกดหฟ5221"
-          },
-          "event": {
-            "$ref": "#/components/schemas/event"
-          },
-          "createAt": {
-            "type": "string",
-            "description": "ข้อมูลเวลา",
-            "default": "2023-03-10T22:08:51.718584300"
-          }
-        }
-      },
-      "event": {
-        "type": "string",
-        "default": "to_base",
-        "description": "เหตุการณ์ของพาหนะ leave_base=ออกจากฐาน, to_base=กลับถึงฐาน",
-        "enum": [
-          "leave_base",
-          "to_base"
-        ]
-      },
       "gps": {
         "type": "object",
         "description": "ข้อมูลเกี่ยวกับตำแหน่งพิกัด GPS",
@@ -98,25 +55,98 @@
             "example": 10
           }
         }
+      },
+      "configRoom": {
+        "type": "object",
+        "description": "ชุดข้อมูลสั่งเปิดเคส ไปยังทีมรถที่ต้องการ",
+        "properties": {
+          "patient": {
+            "type": "array",
+            "description": "รายการผู้ป่วย",
+            "items": {
+              "type": "object",
+              "properties": {
+                "patientId": {
+                  "type": "string",
+                  "description": "รหัสผู้ป่วย",
+                  "example": "p12235"
+                },
+                "idc_level": {
+                  "type": "string",
+                  "description": "รหัสความรุ่นแรง ตามตาราง icd_level Master",
+                  "example": "2"
+                }
+              }
+            }
+          },
+          "teamLevel": {
+            "type": "string",
+            "description": "ระดับของทีม",
+            "example": "ALS"
+          },
+          "gpsWebView": {
+            "type": "string",
+            "description": "ดูพิกัด GPS แบบ webView"
+          },
+          "GeoJSONApi": {
+            "type": "string",
+            "description": "ข้อมูลเพื่อดึงข้อมูลตำแหน่งในรูปแบบ GeoJSON"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "สร้างข้อมูลเมื่อ ไม่ต้องส่งค่านี้เข้ามา จะถูกสร้างโดยระบบ",
+            "example": "2023-03-10T22:08:51.718584300"
+          }
+        }
+      },
+      "conferenceRoom": {
+        "type": "object",
+        "description": "ข้อมูลห้องประชุมฉุกเฉิน",
+        "properties": {
+          "conferenceId": {
+            "type": "string",
+            "description": "รหัส id ของห้องประชุมในการสร้งแต่ละครั้ง รหัสนี้จะไม่ซ้ำกัน",
+            "example": "c11235"
+          },
+          "link": {
+            "type": "string",
+            "description": "ลิงก์หน้าเว็บห้องประชุมเฉุกเฉิน",
+            "example": "https://mi-dems-con/c11235"
+          },
+          "createAt": {
+            "type": "string",
+            "description": "สร้างข้อมูลเมื่อ ไม่ต้องส่งค่านี้เข้ามา จะถูกสร้างโดยระบบ",
+            "example": "2023-03-10T22:08:51.718584300"
+          },
+          "detail": {
+            "type": "object",
+            "description": "ข้อมูลรายละเอียดอื่นๆ",
+            "properties": {
+              "case": {
+                "description": "ข้อมูลเกี่ยวกับเคส",
+                "$ref": "#/components/schemas/configRoom"
+              }
+            }
+          }
+        }
       }
     }
   },
   "paths": {
-    "/event-by-vehicle/{vehicleId}": {
+    "/room/{teamId}": {
       "post": {
-        "tags": [
-          "เหตุการณ์พาหนะ"
-        ],
-        "summary": "เพิ่มเหตุการณ์พาหนะ",
-        "description": "เพิ่มเหตุการณ์ของพาหนะด้วยรหัสพาหนะ เช่น ออกจากฐาน, กลับถึงฐาน โดยปกติข้อมูลส่วนนี้จะเป็นหน้าที่ของ พนักงานขับรถฉุกเฉิน แต่หากระบบสามารถตรวจได้โดยอัตโนมัติก็สามารถ ให้ระบบส่งให้ได้",
+        "tags": ["ห้องประชุม"],
+        "summary": "สร้างห้องประชุม Mi-DEMS",
+        "description": "สร้างห้องประชุมในระบบ Mi-DEMS โดยระบบจะส่งการแจ้งเตือนรับงานฉุกเฉินไปยังทุกคนในทีมที่ระบุ",
         "parameters": [
           {
-            "name": "vehicleId",
-            "description": "รหัสเลขทะเบียนพาหนะ",
+            "name": "teamId",
+            "description": "รหัสทีมที่ออกปฏิบัติการ",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default":"txx1123"
             }
           }
         ],
@@ -124,29 +154,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/postEvent"
+                "$ref": "#/components/schemas/configRoom"
               }
             }
-          },
-          "required": true,
-          "description": "ข้อมูลเหตุการณ์ของพาหนะจำเป็นต้องใส่"
+          }
         },
         "responses": {
-          "200": {
-            "description": "ทำงานได้ปกติ ระบบจะส่งค่าเดิมกลับมาพร้อมวันเวลาจากระบบ",
+          "201": {
+            "description": "ส่งคืนข้อมูลห้องประชุม",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/returnEvent"
+                  "$ref": "#/components/schemas/conferenceRoom"
                 }
               }
             }
           },
           "401": {
             "description": "Authorization ผิด หรือ ไม่ได้ระบุ Authorization"
-          },
-          "404": {
-            "description": "ไม่พบรหัสพาหนะ หรือ พาหนะไม่พร้อม"
           }
         }
       }
