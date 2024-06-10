@@ -27,6 +27,9 @@
   "security": [
     {
       "Authorization": []
+    },
+    {
+      "Oauth": []
     }
   ],
   "components": {
@@ -36,6 +39,20 @@
         "name": "Authorization",
         "in": "header",
         "description": "ปรับแต่งรูปแบบ Key ภายใต้ Authorization http header ใต้ตามต้องการ <br> Example Bearer xxxxx <br> Example api-key aabbcc"
+      },
+      "Oauth": {
+        "type": "oauth2",
+        "description": "แบบ Oauth2 authorizationCode flow ที่ใช้ใน keycloak ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://example.com/api/oauth/dialog",
+            "tokenUrl": "https://example.com/api/oauth/token",
+            "scopes": {
+              "write:mi-dems": "แก้ไข รอตัว auth กลางเสร็จ",
+              "read:mi-dems": "อ่าน รอตัว auth กลางเสร็จ"
+            }
+          }
+        }
       }
     },
     "schemas": {
