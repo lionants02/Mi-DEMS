@@ -34,7 +34,7 @@ flowchart TD
     s-->check{"ปัจจุบันมีการเข้าเวร\nอยู่ในระบบหรือไม่"}
 
     check-->|"ไม่ได้เข้าเวร"|count_org{"สังกัดมากกว่า\n1 หน่วย"}
-    check-......->|"เข้าเวรอยู่"|return_error("Return 400 \nError ปัจจุบันไม่ได้เข้าเวรอยู่")
+    check-......->|"เข้าเวรอยู่"|return_error("Return http 400 \nError ปัจจุบันไม่ได้เข้าเวรอยู่")
 
     count_org-->|"สังกัด 1 หน่วย"|org_one["เลือกหน่วยงานให้อัตโนมัติ"]
     count_org-->|"สังกัดหลายหน่วย"|org_many[["ให้ผู้ใช้เลือกหน่วยที่จะเข้าเวร"]]
@@ -50,7 +50,7 @@ flowchart TD
     job_one-->check_in
     job_many-->check_in
 
-    check_in-->R("Return 200 \nSuccess เข้าเวรสำเร็จ")
+    check_in-->R("Return http 200 \nSuccess เข้าเวรสำเร็จ")
 ```
 
 
