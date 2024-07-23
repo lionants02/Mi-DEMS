@@ -59,10 +59,11 @@ flowchart TD
 flowchart TD
     s("ออกเวร")
     s-->check{"ปัจจุบันมีการเข้าเวร\nอยู่ในระบบหรือไม่"}
-    check-..->|"ไม่ได้เข้าเวร"|return_error("Return 400 \nError มีการเข้าเวรอยู่")
+    isCheckin-->R("Return http 200 \nSuccess ออกเวรสำเร็จ")
+    check-..->|"ไม่ได้เข้าเวร"|return_error("Return 400 \nError ไม่ได้เข้าเวรอยู่")
 
     check-->|"มีการเข้าเวรอยู่"|isCheckin[["เรียกฟังก์ชั่นออกเวร"]]
-    isCheckin-->R("Return 200 \nSuccess ออกเวรสำเร็จ")
+    isCheckin-->R("Return http 200 \nSuccess ออกเวรสำเร็จ")
 ```
 
 
